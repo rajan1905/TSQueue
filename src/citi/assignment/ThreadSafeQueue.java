@@ -56,25 +56,48 @@ public class ThreadSafeQueue<E> implements QueueInterface<E>
 	}
 
 	@Override
-	public E peek() 
+	public E peek() throws InterruptedException 
 	{
-		
-		return null;
+		monitor.lock();
+		try
+		{
+			return queue.get(queue.size()-1);
+		}
+		finally
+		{
+			monitor.unlock();
+		}
 	}
 
 	@Override
-	public boolean isFull() 
+	public boolean isFull() throws InterruptedException 
 	{
-		if(queue.size()==SIZE)
-		return true;
-		
+		monitor.lock();
+		try
+		{
+			if(queue.size()==SIZE)
+				return true;
+		}
+		finally
+		{
+			monitor.unlock();
+		}
 		return false;
 	}
 
 	@Override
-	public boolean isEmpty() 
+	public boolean isEmpty() throws InterruptedException 
 	{
-		
+		monitor.lock();
+		try
+		{
+			if(queue.size()==0)
+				return true;
+		}
+		finally
+		{
+			monitor.unlock();
+		}
 		return false;
 	}
 	
